@@ -1,0 +1,200 @@
+// Import main Sass/SCSS here
+import "./variation-1.scss";
+
+// Start Variation JS
+void (function loadVariation(timeInFuture) {
+  // Check, if it is a PDP page
+  function isPdpPage() {
+    return location.pathname.includes("/ppdp/prod-");
+  }
+
+  // Return, if not a PDP page
+  if (!isPdpPage()) {
+    console.log("Saabbir:", "Not a PDP page!");
+    return;
+  }
+
+  // Get product id and size container
+  const productIdRegex = /prod-(\d+).aspx$/;          
+  const productIdMatch = location.pathname.match(productIdRegex);
+  const productId = productIdMatch && productIdMatch[1];                 
+  const sizeContainer = document.querySelector(
+    `#filterSizeContainer_${productId}`
+  );
+  const sizeOverlayContainer = document.querySelector(
+    `#filterSize_${productId}`
+  );
+  const addToBasketBtn = document.querySelector(
+    `button#btnAddToBasket_${productId}`
+  );
+
+  // Main polling
+  if (!(productId && sizeContainer && sizeOverlayContainer && addToBasketBtn)) {
+    return Date.now() < timeInFuture
+      ? setTimeout(loadVariation.bind({}, timeInFuture), 25)
+      : console.log("Saabbir:", "loadVariation timed out!");
+  }
+
+  // Test config
+  const test = {
+    id: "test-lar-1073",
+    name: "001073-LAR Size exposed within PDP",
+    version: "Version 1.2",
+    variation: "Variation 1",
+  };
+
+  // Return if the test ran already!
+  if (document.querySelector(`.${test.id}`)) return;
+
+  // Main variation object
+  const variation = {
+    // Variation init
+    init: function () {
+      // Add a variation specific classname to the body element
+      document.body.classList.add(test.id);
+
+      // Below function calls order is important
+      this.mainCSS();
+      this.mainJS();
+    },
+
+    // Main CSS
+    mainCSS: function () {
+      const styleEl = document.createElement("style");
+      styleEl.id = test.id + "__mainCSS";
+      document.head.appendChild(styleEl).textContent = `
+        #filterSize_${productId}_Panel,
+        #filterSizeContainer_${productId} {
+          display: none !important;
+        }
+
+        .h-onesize-product #filterSizeContainer_${productId} {
+          display: block !important;
+        }
+
+        button#btnAddToBasket_${productId} {
+          pointer-events: none;
+        }
+
+        button#btnAddToBasket_${productId}.is-active,
+        .h-onesize-product button#btnAddToBasket_${productId} {
+          pointer-events: auto;
+        }
+
+        // #filterSize_${productId} {
+        //   display: block !important;
+        // }
+      `;
+    },
+
+    // Main JS
+    mainJS: function () {
+      // After size panel overlay opens, grab all size item buttons
+      const sizeItemBtns =
+        sizeOverlayContainer.querySelectorAll(`button.size-item`);
+
+      // Check for one size product
+      if (
+        !sizeItemBtns.length ||
+        (sizeItemBtns.length === 1 &&
+          sizeItemBtns[0].dataset.title === "ONE SIZE")
+      ) {
+        console.log("Saabbir:", "One size product!");
+        document.body.classList.add("h-onesize-product");
+        return;
+      } else {
+        document.body.classList.remove("h-onesize-product");
+      }
+
+      // Check for more than 10 size buttons
+      if (sizeItemBtns.length > 10) {
+        document.body.classList.add("h-more-than-10-size-buttons");
+        document.documentElement.style.setProperty(                
+          "--size-columns",
+          Math.ceil(sizeItemBtns.length / 2)
+        );
+      } else {
+        document.body.classList.remove("h-more-than-10-size-buttons");
+      }
+
+      // Grab all sizes
+      const sizes = [];
+      sizeItemBtns.forEach((item) => {
+        const isSizeDisabled =
+          item.disabled ||
+          item.classList.contains("disabled") ||
+          item
+            .querySelector(".pdp-filter-size-value")
+            .classList.contains("disabled");
+        const sizeEl = item.querySelector(".pdp-filter-size-value");
+        const sizeValue = sizeEl.textContent.trim();              // **** trim() remove whitespace 
+        const sizeId = item.getAttribute("data-cerberus");
+        sizes.push({ sizeValue, isSizeDisabled, sizeId });
+      });
+
+      // Create size item markup
+      const sizesHtml = sizes.map(                                // **** callback
+        ({ sizeValue, isSizeDisabled, sizeId }) =>
+          `<li class="c-size ${
+            isSizeDisabled ? "is-disabled" : ""
+          }" data-size-id="${sizeId}">${sizeValue}</li>`
+      );
+
+      // Create sizes markup                                // join
+      const html = `
+        <div class="c-size-wrapper">
+          <div class="c-size-wrapper__title">SIZE</div>
+          <ul class="c-sizes">
+            ${sizesHtml.join("")}                            
+          </ul>
+        </div>
+        
+      `;
+
+      // Remove sizes before inserting
+      document.querySelector(".c-sizes")?.remove();
+      sizeContainer.insertAdjacentHTML("afterend", html);
+    },
+
+    // Setup events
+    setupEvents: function () {
+      document.addEventListener("click", variation.handleDocumentClicks);
+    },
+
+    // Handle all document clicks
+    handleDocumentClicks: function (clickEvent) {
+      // Handle `c-size` click
+      if (clickEvent.target.closest("li.c-size")) {
+        const clickedLi = clickEvent.target.closest("li.c-size");
+
+        // Set/unset `is-active` class to variation sizes
+        clickedLi.parentElement
+          .querySelectorAll("li")
+          .forEach((li) => li.classList.remove("is-active"));
+        clickedLi.classList.add("is-active");
+
+        // Grab the size id
+        const sizeId = clickedLi.dataset.sizeId;
+
+        // Find the associated overlay size btn and trigger a click
+        const overlaySizeBtn = sizeOverlayContainer.querySelector(
+          `button.size-item[data-cerberus="${sizeId}"]`
+        );
+        overlaySizeBtn && overlaySizeBtn.click();
+
+        // Activate add to basket button now as the size is selected
+        addToBasketBtn.classList.add("is-active");
+      }
+    },
+  };
+
+  // Init variation
+  variation.init();
+
+  // Setup events
+  variation.setupEvents();
+
+  // Success log
+  console.log("Saabbir:", `${test.name}: ${test.variation}: ${test.version}`);
+})(Date.now() + 60000); // 60000ms = 1m
+// End Variation JS
