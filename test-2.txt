@@ -1,0 +1,505 @@
+website address: https://www.laredoute.com/ppdp
+
+
+JS Code:
+
+var basicStructure = {
+    init: function () {
+    	
+  // Get product id and size container
+  const productIdRegex = /prod-(\d+).aspx$/;                            
+  const productIdMatch = location.pathname.match(productIdRegex);
+  const productId = productIdMatch && productIdMatch[1];                    
+  const sizeContainer = document.querySelector(
+    `#filterSizeContainer_${productId}`
+  );
+  const sizeOverlayContainer = document.querySelector(
+    `#filterSize_${productId}`
+  );
+  const addToBasketBtn = document.querySelector(
+    `button#btnAddToBasket_${productId}`
+  );
+  
+  console.log(sizeContainer);
+  console.log(sizeOverlayContainer);
+  console.log(addToBasketBtn);
+        
+        
+        this.mainCss();
+        this.mainJS();
+        this.goalJS();
+    },
+    mainCss: function () {
+        var s = document.createElement('style');
+        s.setAttribute('type', 'text/css');
+        document.head.appendChild(s).textContent = '.section-title {\n' +
+            '    font-family: futura-pt-medium,sans-serif;\n' +
+            '    font-size: 50px;\n' +
+            '    line-height: 1;\n' +
+            '    margin-bottom: 20px;\n' +
+            '}';
+
+    },
+    mainJS: function () {
+    
+        let selectedSizeValue = null;
+    	
+    document.addEventListener("DOMContentLoaded", function () {
+
+    	
+    	
+    	
+    const buttonCount = document.querySelectorAll(".pdp-filter-item.size-item").length;
+    
+    // Select all elements with the class ".pdp-filter-item.size-item"
+	const elements = document.querySelectorAll(".pdp-filter-size-value");
+
+	
+	const sizes = [];
+	
+	elements.forEach(element => {
+    sizes.push(element.textContent);
+    
+	});
+	
+	if(selectedSizeValue != null){
+		elements.forEach(element => {
+			console.log(element.textContent);
+			if(element.textContent == selectedSizeValue){
+				element.click();
+			}
+		});
+	}
+	
+	
+
+	// Now, elementsArray is an array containing all the selected elements
+	console.log(sizes);
+
+    console.log(`Container has ${buttonCount} buttons.`);
+
+    
+    const dropdown = document.querySelector('[data-cerberus="dropdownSize"]').innerHTML = `
+        <div class='size-font'>SIZE</div>
+        <button class="down-arrow-button"></button>
+    `;
+        
+    // start write here
+    var button = document.querySelector('.down-arrow-button');
+    
+    const targetElement = document.querySelector('[data-cerberus="dropdownSize"]');
+        
+        
+    // Insert the new div after the target element
+    targetElement.insertAdjacentHTML('afterend', '<div class="size-container"></div>');
+
+	// Get the size container elements
+    const sizeContainer = document.querySelector('.size-container');
+    
+    function populateSizes(sizeArray) {
+    // Check if there are more than or equal to 10 sizes
+    const isLargeSizeArray = sizeArray.length >= 10;
+    
+    const root = document.documentElement;
+
+    // Clear the existing size container content
+    sizeContainer.innerHTML = '';
+
+    sizeArray.forEach((size) => {
+        const sizeElement = document.createElement('button'); // Always create buttons
+
+        sizeElement.classList.add('size-box', 'size-box-available', 'pdp-filter-item');
+        sizeElement.textContent = size;
+
+        sizeContainer.appendChild(sizeElement);
+    });
+
+    // Add or remove the 'max-items-per-row' class based on the size array length
+    if (isLargeSizeArray) {
+        root.style.setProperty('--size-columns', Math.ceil(sizeArray.length / 2));
+    	sizeContainer.classList.add('max-items-per-row');
+    	sizeContainer.classList.remove('flex-container');
+    } else {
+        root.style.setProperty('--size-columns', 1); 
+    	sizeContainer.classList.remove('max-items-per-row');
+    	sizeContainer.classList.add('flex-container');
+    	}
+	}
+
+	// Call the function with your sizes array
+	populateSizes(sizes);
+
+    
+    // Get all .size-box elements
+	const button2 = document.querySelectorAll('.size-box');
+	
+	let selectedSize = null; // Variable to store the selected size
+
+	// Function to handle size-box selection
+	function selectSize(sizeElement) {
+    // Deselect the previously selected size-box
+    if (selectedSize) {
+        selectedSize.classList.remove('selected');
+    }
+
+    // Select the new size-box
+    sizeElement.classList.add('selected');
+    selectedSize = sizeElement;
+    
+
+    // Perform your functionality using the selectedSize variable
+    selectedSizeValue = selectedSize.textContent;
+    console.log('Selected size:', selectedSizeValue);
+    
+    var spanElement = document.querySelector('.article-atb-details-size');
+	
+	spanElement.textContent = selectedSizeValue;
+	
+	console.log(spanElement.textContent);
+}
+
+	// Add a click event listener to each size-box
+	button2.forEach((element) => {
+    element.addEventListener('click', () => {
+        selectSize(element);
+    });
+});
+
+
+	
+// Get references to all button elements on the page
+const buttons = document.querySelectorAll('.lr-button');
+
+// Add the class "addToBasketButton" to each button
+buttons.forEach(function(button) {
+  button.classList.add("addToBasketButton");
+});
+
+
+
+
+
+
+
+
+// Get references to all buttons with the class "addToBasketButton"
+const addToBasketButtons = document.querySelectorAll(".addToBasketButton");
+
+
+function addToBasketClickHandler(event) {
+  //code here to handle the button click event
+  
+  if(selectedSizeValue !== null){
+  	console.log('good');
+  } else {
+  	alert("Please Select a Size");
+  }
+  
+  console.log(`Button with ID ${event.target.id} clicked! You can add your logic here.`);
+}
+
+addToBasketButtons.forEach(function(button) {
+  button.addEventListener("click", addToBasketClickHandler);
+});
+
+
+
+
+
+
+
+// ***********  02.10.2023  ****************
+
+// Get all buttons in the second set
+var secondSetButtons = document.querySelectorAll('.pdp-filter-item.size-item');
+
+// Get all custom buttons in your created list
+const customButtons = document.querySelectorAll('.size-box');
+
+secondSetButtons.forEach((secondSetButton) => {
+    // Check if the second set button is disabled
+    const isDisabled = secondSetButton.getAttribute('data-disabled') === 'true';
+    
+    // Find the corresponding custom button based on title
+    const customButtonTitle = secondSetButton.getAttribute('data-title');
+    const customButton = Array.from(customButtons).find((button) => {
+        return button.textContent.trim() === customButtonTitle;
+    });
+
+    if (isDisabled && customButton) {
+        // Disable the corresponding custom button
+        customButton.classList.remove('size-box-available');
+        customButton.classList.add('size-box-notAvailable');
+        customButton.disabled = true; // Disable the button to make it unclickable
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+// Get the parent container of your custom buttons
+var customButtonsContainer = document.querySelector('.size-container');
+
+
+
+
+// secondSetButtons.forEach((item) => {
+// 	const isSizeDisabled =
+//           item.disabled ||
+//           item.classList.contains("disabled") ||
+//           item
+//             .querySelector(".pdp-filter-size-value")
+//             .classList.contains("disabled");
+            
+//     if(isSizeDisabled){
+//     	console.log("yes");
+//     	// here I have to wite the logic
+//     }
+// });
+
+
+
+
+// Add click event listener to the parent container using event delegation
+customButtonsContainer.addEventListener('click', function(event) {
+    // Check if the clicked element is one of your custom buttons
+    if (event.target.classList.contains('size-box-available')) {
+        // Get the title of the clicked custom button
+        var customButtonTitle = event.target.textContent.trim();
+
+        // Find the corresponding button in the second set based on the title
+        var secondSetButton = Array.from(secondSetButtons).find(function(button) {
+            return button.getAttribute('data-title') === customButtonTitle;
+        });
+
+        // If the corresponding button is found, trigger a click event on it
+        if (secondSetButton) {
+            // Remove "selected" class from all buttons in the second set
+            secondSetButtons.forEach(function(button) {
+                button.classList.remove('selected');
+            });
+
+            // Add "selected" class to the clicked button in the second set
+            secondSetButton.classList.add('selected');
+            secondSetButton.click();
+        }
+    }
+});
+
+
+    
+    
+    
+	});
+	
+	//END
+
+    
+    },
+    
+   
+	goalJS: function () {
+        
+    }
+};
+
+(function pollFor() {
+	console.log("Pooling function ran");
+     if (document.querySelectorAll('[data-cerberus="dropdownSize"]') && document.querySelectorAll('[data-cerberus="dropdown-pdp-size"]') && document.querySelectorAll('.pdp-filter-item.size-item') &&  document.querySelector('.size-link-container') && document.querySelectorAll('.article-atb-details-size') ) {
+     	console.log("inside if");
+        basicStructure.init();
+        console.log("Variation- A: 01");
+        
+     } else {
+         setTimeout(pollFor, 25);
+     }
+ })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CSS Code: 
+
+.pdp-filter{
+	border: none !important;
+	
+}
+
+[data-cerberus="dropdownColor"]{
+ 	border-bottom: 1px solid #ccc;
+}
+
+ 
+[data-cerberus="dropdownColor"] .lr-arrow{
+  	display: none;
+}
+
+ 
+.pdp-filter-popin{
+	/*display: none;*/
+    /*visibility: hidden;*/
+    /*opacity: 0;*/
+    /*position: absolute;*/
+    /*z-index: -1;*/
+    /*pointer-events: none;*/
+}
+
+
+
+
+
+
+.down-arrow-button {
+  width: 30px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  background-color: #fff; /* Button background color */
+  border: none; /* Remove border for a clean appearance */
+  border-radius: 50%; /* Make it a circular button */
+  cursor: pointer; /* Show pointer cursor on hover */
+  position: relative; /* Position for the arrow icon */
+  
+}
+
+.down-arrow-button::after {
+  content: ''; /* This pseudo-element will create the arrow */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-225deg); /* Rotate to create an arrow */
+  width: 10px; /* Adjust the size of the arrow */
+  height: 10px; /* Adjust the size of the arrow */
+  border-top: 3px solid #000; /* Arrow color */
+  border-right: 3px solid #000; /* Arrow color */
+  
+}
+
+.size-font{
+	color: #000;
+	font-family: 'Poppins';
+	font-size: 14px;
+	font-weight: 700;
+
+}
+
+.pdp-filter-item{
+	appearance: none;
+}
+
+
+/* size boxes styling */
+
+
+.size-container {
+    display: grid;
+    grid-template-columns: repeat(var(--size-columns, 1), 1fr); 
+    justify-content: flex-start; 
+    overflow-x: auto; 
+    overflow-y: hidden; 
+    scrollbar-width: thin; 
+    scrollbar-color: #ccc #888; /
+    max-height: calc(2 * (size-of-a-button + margin));
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #888;
+    max-height: calc(2 * (size-of-a-button + margin));
+}
+
+
+.size-box {
+    margin: 4px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    max-width: fit-content;
+    width: auto;
+}
+
+
+.max-items-per-row .size-box {
+    flex-basis: calc(50% - 8px);
+}
+
+.size-box:hover {
+	background-color:#f62;
+	color: #fff;
+	cursor: pointer;
+}
+
+.size-box.selected {
+    background-color: #ff3f52; 
+    color: #fff;
+}
+
+.size-box-available{
+    color: #fff;
+    background-color: #000000; 
+}
+
+.size-box-notAvailable{
+    color:#000;
+    background-color: #ccc;
+    user-select: none;
+    pointer-events: none;
+}
+
+
+.select-box {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+}
+
+
+#size-dropdown{
+    width: 250px;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #000000;
+}
+
+
+select.hidden,
+button.hidden {
+    display: none;
+}

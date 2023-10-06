@@ -1,0 +1,247 @@
+Website Address: https://www.vuse.com/gb/en/create-account
+
+
+
+JS Code: 
+
+var basicStructure = {
+    init: function () {
+        this.mainCss();
+        this.mainJS();
+        this.goalJS();
+    },
+    mainCss: function () {
+        var s = document.createElement('style');
+        s.setAttribute('type', 'text/css');
+        document.head.appendChild(s).textContent = '.section-title {\n' +
+            '    font-family: futura-pt-medium,sans-serif;\n' +
+            '    font-size: 50px;\n' +
+            '    line-height: 1;\n' +
+            '    margin-bottom: 20px;\n' +
+            '}';
+
+    },
+    mainJS: function () {
+        document.querySelector('.createAccountExtend-options-3NZ').innerHTML = `
+  <div class="container">
+        <div class="title">
+            STAY UP TO DATE WITH ALL THINGS VUSE
+
+        </div>
+        <div class="sub-title">
+            New products, exclusive offers and weekly tips delivered straight to your inbox.
+        </div>
+        <div class="paragraph">
+            I would like to receive marketing information about products and services relating to VUSE and all other current and future brands of British American Tobacco UK Limited and Nicoventures Retail (UK) Limited. 
+        </div>
+		
+	<div class="checkbox-container">
+        <div class="checkbox-container-email">
+             <input type="checkbox" id="emailCheckbox">
+
+             <div class="con">Email</div>
+        </div>
+        <div class="checkbox-container-sms">
+           
+             <input type="checkbox" id="smsCheckbox">
+          
+             <div class="con2">SMS</div>
+        </div>
+    </div> 
+
+        <div class="paragraph">
+            You have the right to withdraw your consent at any time, including by using the unsubscribe option in the message you receive. You also have the right to object at any time to any use of your personal information for direct marketing and related profiling. 
+        </div>
+        <div class="paragraph">
+            To find out more about how we use your personal information and your rights,
+        
+        <br>
+            please see <span class="bold"><a href="https://www.vuse.com/gb/en/privacy-notice" target="_blank">our Privacy Notice</a></span>
+        </div>
+   </div>
+   
+`;
+
+function changingText() {
+ 	console.log("changing text function ran");
+ 	var spanElement = document.querySelector('.createAccountExtend-submitButton-3RD .button-content-3ns');
+	console.log(spanElement);
+	
+	if (spanElement) {
+        spanElement.textContent = 'CONTINUE TO DELIVERY & PAYMENT';
+ 	}
+}
+
+ setTimeout(changingText, 1000);
+	},
+	
+	goalJS: function () {
+        //For JS
+    }
+};
+
+(function pollFor() {
+	console.log("Pooling function ran");
+     if (document.querySelector('.createAccountExtend-options-3NZ') && document.querySelector('.createAccountExtend-submitButton-3RD .button-content-3ns')) {
+     	console.log("inside if");
+        basicStructure.init();
+        console.log("Variation- A: 01");
+        
+     } else {
+         setTimeout(pollFor, 25);
+     }
+ })();
+
+
+
+
+CSS Code:
+
+
+
+* {
+    box-sizing: border-box;
+}
+
+.createAccountExtend-options-3NZ div:nth-of-type(3) {
+    border-bottom: 0 !important;
+}
+
+.container{
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+    font-size: 12px;
+    line-height: 15px;
+    height: fit-content;
+    width: 630px;
+    font-family: 'Gotham';
+}
+
+.title{
+	font-family: 'Gotham';
+    margin-top: 2rem;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 19px;
+    text-align: left;
+    margin-bottom: 10px;
+    color: #000000;
+}
+
+.sub-title{
+	font-family: 'Gotham';
+    font-size: 16px;
+    font-weight: 400 !important;
+    line-height: 19px;
+    
+    text-align: left;
+    margin-bottom: 10px;
+    color: #000000;
+}
+
+.paragraph{
+	font-family: 'Gotham';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19px;
+    text-align: left;
+    margin-bottom: 15px;
+    color: #6B6B6B;
+    letter-spacing: -0.9%;
+;
+     
+}
+
+.checkbox-container{
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.checkbox-container-email, .checkbox-container-sms{
+    width: 280px;
+    height: 86px;
+    border-radius: 2px !important;
+    border: 1px solid #DEDEDE !important;
+    background-color: #F9F9F9;
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+ .checkbox-container #smsCheckbox,
+ .checkbox-container #emailCheckbox {
+    margin-top: 30px; 
+    height: 29px;
+    width: 29px;
+    margin-left: 20px;
+    border: 2px solid #C1C1C1 !important;
+    border-radius: 2px  !important;
+    appearance: none;
+}
+
+.con, .con2{
+    font-family: Gotham;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 19px;
+	
+	text-align: left;
+	margin-top: 36px;
+    margin-left: 10px;
+	color: #6B6B6B;
+	text-transform: uppercase;
+
+}
+
+.bold a{
+   color: #6B6B6B;
+   font-size: 14px;
+   font-weight: 700;
+   text-decoration: underline;
+   
+}
+
+.createAccountExtend-submitButton-3RD .button-content-3ns{
+	font-weight: 700;
+}
+
+.createAccountExtend-submitButton-3RD{
+	margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        font-size: 16px;
+        width: 100%; 
+    }
+
+    .title {
+        font-size: 20px; 
+    }
+
+    .checkbox-container {
+        flex-direction: column; 
+        align-items: flex-start; 
+    }
+
+    .checkbox-container-email,
+    .checkbox-container-sms {
+        width: 100%; 
+        margin-bottom: 10px; 
+    }
+
+    .checkbox-container #smsCheckbox,
+    .checkbox-container #emailCheckbox {
+        margin-top: 30px; 
+        margin-left: 15; 
+    }
+
+    .bold a {
+        font-size: 12px; 
+    }
+
+    .createAccountExtend-submitButton-3RD .button-content-3ns {
+        font-size: 16px; 
+    }
+}

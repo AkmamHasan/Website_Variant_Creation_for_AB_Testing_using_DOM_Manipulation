@@ -1,0 +1,73 @@
+var basicStructure = {
+    init: function () {
+        this.mainCss();
+        this.mainJS();
+        this.goalJS();
+    },
+    mainCss: function () {
+        var s = document.createElement('style');
+        s.setAttribute('type', 'text/css');
+        document.head.appendChild(s).textContent = '.section-title {\n' +
+            '    font-family: futura-pt-medium,sans-serif;\n' +
+            '    font-size: 50px;\n' +
+            '    line-height: 1;\n' +
+            '    margin-bottom: 20px;\n' +
+            '}';
+
+    },
+    mainJS: function () {
+        document.querySelector('.createAccountExtend-options-3NZ').innerHTML = `
+  <div class="container">
+        <div class="title">
+            STAY UP TO DATE WITH ALL THINGS VUSE
+
+        </div>
+        <div class="sub-title">
+            New products, exclusive offers and weekly tips delivered straight to your inbox.
+        </div>
+        <div class="paragraph">
+            I would like to receive marketing information about products and services relating to VUSE and all other current and future brands of British American Tobacco UK Limited and Nicoventures Retail (UK) Limited. 
+        </div>
+
+    <div class="checkbox-container">
+        <div class="checkbox-container-email">
+            <input type="checkbox" id="emailCheckbox">
+
+            <div class="con">Email</div>
+        </div>
+        <div class="checkbox-container-sms">
+           
+            <input type="checkbox" id="smsCheckbox">
+          
+            <div class="con2">SMS</div>
+            
+        </div>
+    </div>
+
+        <div class="paragraph">
+            You have the right to withdraw your consent at any time, including by using the unsubscribe option in the message you receive. You also have the right to object at any time to any use of your personal information for direct marketing and related profiling. 
+        </div>
+        <div class="paragraph">
+            To find out more about how we use your personal information and your rights, please see our Privacy Notice
+        
+        <br>
+            please see <span class="bold"><a href="https://www.vuse.com/gb/en/privacy-notice" target="_blank">our Privacy Notice</a></span>
+        </div>
+    </div>
+`;
+
+    },
+    goalJS: function () {
+        //For JS
+    }
+};
+
+(function pollFor() {
+    console.log("Pooling function ran");
+    if (document.querySelector('.createAccountExtend-options-3NZ')) {
+        basicStructure.init();
+        console.log("Variation- A: 01");
+    } else {
+        setTimeout(pollFor, 25);
+    }
+})();
